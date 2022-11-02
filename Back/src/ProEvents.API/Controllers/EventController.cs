@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProEvents.API.Data;
 using ProEvents.API.models;
 
 namespace ProEvents.API.Controllers
@@ -13,42 +14,23 @@ namespace ProEvents.API.Controllers
     public class EventController : ControllerBase
     {
 
-        public IEnumerable<Event> _event = new Event[]{
-                new Event(){
-                    EventId = 1,
-                    theme = "Imigration",
-                    Local = "Toronto",
-                    Lot = " 1° lot",
-                    QuantityPeople = 258,
-                    EventDate = DateTime.Now.AddDays(2).ToString(),
-                    UrlImage = "image.png"
-                },
-                new Event(){
-                    EventId = 2,
-                    theme = "Imigration 2",
-                    Local = "Toronto",
-                    Lot = " 1° lot",
-                    QuantityPeople = 258,
-                    EventDate = DateTime.Now.AddDays(2).ToString(),
-                    UrlImage = "image.png"
-                }   
-        };
+        public DataContext _context { get; }
 
-        public EventController()
+        public EventController(DataContext context)
         {
-
+            _context = context;
         }
 
         [HttpGet]
         public IEnumerable<Event> Get()
         {
-            return _event;
+            return _context.Events;
         }
 
         [HttpGet("{id}")]
-        public IEnumerable<Event> GetById(int id)
+        public Event GetById(int id)
         {
-            return _event.Where(e => e.EventId == id);
+            return _context.Events.FirstOrDefault(e => e.EventId == id);
         }
 
         [HttpPost]
